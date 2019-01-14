@@ -49,7 +49,7 @@ class Extractor:
         wordMap = {}
         keyMap = {}
         keywords = self.extract_keywords()
-        print(self.sentences)
+        # print(self.sentences)
         words = self.extract_words(False) #Extract words other than stopwords
         for word in words:
             freq = self.normalizedText.count(word)
@@ -57,11 +57,11 @@ class Extractor:
             for i in range(len(self.sentences)):
                 if word in self.sentences[i]:
                     deg += len(self.sentences[i])
-            print(word+" : "+str(deg))
+            # print(word+" : "+str(deg))
             wordScore = deg/freq
             wordMap[word] = wordScore
-        print("WordMap: "+str(wordMap))
-        print(len(wordMap))
+        # print("WordMap: "+str(wordMap))
+        # print(len(wordMap))
         for keyword in keywords:
             allWords = re.split(" +",keyword)
             keyScore = 0
@@ -70,4 +70,4 @@ class Extractor:
             keyMap[keyword] = keyScore
         sortedMap = sorted(keyMap.items(), key=operator.itemgetter(1))
         sortedMap.reverse()
-        return sortedMap
+        return wordMap
