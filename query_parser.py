@@ -52,6 +52,11 @@ class Parser:
                 # print("List1: "+str(list1))
                 # print("List2: "+str(list2))
                 output = self.processor.andMerge(list1, list2)
+
+                if self.tokens[self.tokenPtr]["type"] == Type.AND:
+                    self.eat(Type.AND)
+                    list3 = self.parseTerm()
+                    output = self.processor.andMerge(list3, output)
                 # print("And: "+str(output))
                 return output
         return list1
@@ -64,6 +69,11 @@ class Parser:
                 self.eat(Type.OR)
                 list2 = self.parseFactor()
                 output = self.processor.orMerge(list1, list2)
+
+                if self.tokens[self.tokenPtr]["type"] == Type.OR:
+                    self.eat(Type.OR)
+                    list3 = self.parseTerm()
+                    output = self.processor.andMerge(list3, output)
                 # print("Or: "+str(output))
                 return output
             self.eat(Type.SEMICOLON)
