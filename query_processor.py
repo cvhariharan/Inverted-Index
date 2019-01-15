@@ -11,7 +11,12 @@ class Processor:
         self.documents = self.index["docslist"]
 
     def getPostingList(self, keyword):
-        return self.index[keyword]
+        try:
+            return self.index[keyword]
+        except KeyError:
+            print("No such keyword in the index: "+keyword)
+            return []
+
     
     def andMerge(self, list1, list2):
         # Not necessary is already sorted
@@ -70,18 +75,18 @@ class Processor:
         return output
     
     def notKeyword(self, keyword):
-        output = self.index[keyword]
+        output = self.getPostingList(keyword)
         output = self.diffMerge(self.documents, output)
         return output
     
     def andKeyword(self, keyword1, keyword2):
-        postingList1 = self.index[keyword1]
-        postingList2 = self.index[keyword2]
+        postingList1 = self.getPostingList(keyword1)
+        postingList2 = self.getPostingList(keyword2)
         return self.andMerge(postingList1, postingList2)
     
     def orKeyword(self, keyword1, keyword2):
-        postingList1 = self.index[keyword1]
-        postingList2 = self.index[keyword2]
+        postingList1 = self.getPostingList(keyword1)
+        postingList2 = self.getPostingList(keyword2)
         return self.orMerge(postingList1, postingList2)
 
     
