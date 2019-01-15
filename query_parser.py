@@ -75,7 +75,7 @@ def lexer(query):
     query = query.lower()
     query = re.sub("[^A-Za-z0-9_]", " ", query)
     query = re.sub(" +", " ", query)
-    query += ";"
+    query += " ;"
     tokens = query.split(" ")
     tokensList = []
     for i in range(len(tokens)):
@@ -85,6 +85,8 @@ def lexer(query):
             tokensList.append({"token": tokens[i], "type": Type.NOT})
         elif tokens[i] == "or":
             tokensList.append({"token": tokens[i], "type": Type.OR})
+        elif tokens[i] == ";":
+            tokensList.append({"token": tokens[i], "type": Type.SEMICOLON})
         else:
             tokensList.append({"token": tokens[i], "type": Type.KEYWORD})
     

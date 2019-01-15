@@ -70,4 +70,4 @@ class Extractor:
             keyMap[keyword] = keyScore
         sortedMap = sorted(keyMap.items(), key=operator.itemgetter(1))
         sortedMap.reverse()
-        return wordMap
+        return list(wordMap.keys())
