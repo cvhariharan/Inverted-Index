@@ -1,5 +1,6 @@
 import sys, os, re
 from enum import Enum
+import query_processor
 
 class Type(Enum):
     KEYWORD = 1
@@ -9,9 +10,10 @@ class Type(Enum):
 
 class Parser:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, path):
         self.tokens = tokens
         self.tokenPtr = 0
+        self.processor = query_processor.Processor(path)
 
     def error(self):
         print("Error at token: "+self.tokens[self.tokenPtr]["token"])
@@ -19,14 +21,52 @@ class Parser:
 
     def eat(self, keyType):
         if keyType == self.tokens[self.tokenPtr]["type"]:
+            token = self.tokens[self.tokenPtr]["token"]
             self.tokenPtr += 1
+            return token
         else:
             self.error()
     
     def parseBasicExpression(self):
+        print("ParseBasicExpression: "+self.tokens[self.tokenPtr]["token"])
         if self.tokens[self.tokenPtr]["type"] == Type.NOT:
             self.eat(Type.NOT)
-        self.eat(Type.KEYWORD)
+            keyword = self.eat(Type.KEYWORD)
+            print("Not: "+str(self.processor.notKeyword(keyword)))
+            return self.processor.notKeyword(keyword)
+        else:
+            keyword = self.eat(Type.KEYWORD)
+            print("Keyword: "+str(self.processor.getPostingList(keyword)))
+            return self.processor.getPostingList(keyword)
+
+    def parseFactor(self):
+        print("ParseFactor: "+self.tokens[self.tokenPtr]["token"])
+        list1 = self.parseBasicExpression()
+        if self.tokens[self.tokenPtr]["type"] == Type.AND:
+            self.eat(Type.AND)
+            list2 = self.parseBasicExpression()
+            print("List1: "+str(list1))
+            print("List2: "+str(list2))
+            output = self.processor.andMerge(list1, list2)
+            print("And: "+str(output))
+            return output
+        else:
+            print("BasicExpression: "+str(list1))
+            return list1
+    
+    def parseTerm(self):
+        print("ParseTerm: "+self.tokens[self.tokenPtr]["token"])
+        list1 = self.parseFactor()
+        if self.tokens[self.tokenPtr]["type"] == Type.OR:
+            self.eat(Type.OR)
+            list2 = self.parseFactor()
+            output = self.processor.orKeyword(list1, list2)
+            print("Or: "+str(output))
+            return output
+        else:
+            print("Factor: "+str(list1))
+            return list1
+    
 
 
 def lexer(query):
@@ -49,5 +89,6 @@ def lexer(query):
 
 query = input()
 print(lexer(query))
+queryParser = Parser(lexer(query), './index.json').parseTerm()
 
 

@@ -15,13 +15,13 @@ class Processor:
     
     def andMerge(self, list1, list2):
         # Not necessary is already sorted
-        list1 = list1.sort()
-        list2 = list2.sort()
+        list1.sort()
+        list2.sort()
 
         output = []
         i = 0 #pointing to list1
         j = 0 #pointing to list2
-        while i < range(len(list1)) and j < range(len(list2)):
+        while i < len(list1) and j < len(list2):
             if int(list1[i]) < int(list2[j]):
                 i += 1
             elif int(list1[i]) > int(list2[j]):
@@ -34,13 +34,13 @@ class Processor:
 
     def orMerge(self, list1, list2):
         # Not necessary is already sorted
-        list1 = list1.sort()
-        list2 = list2.sort()
+        list1.sort()
+        list2.sort()
         
         output = []
         i = 0 #pointing to list1
         j = 0 #pointing to list2
-        while i < range(len(list1)) and j < range(len(list2)):
+        while i < len(list1) and j < len(list2):
             if int(list1[i]) < int(list2[j]):
                 output.append(list1[i])
                 i += 1
