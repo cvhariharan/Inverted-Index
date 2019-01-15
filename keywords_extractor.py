@@ -2,7 +2,7 @@ import re, operator, math, string
 
 class Extractor:
     def normalize(self,text):
-        text = re.sub("[^A-Za-z0-9_]", " ", text)
+        text = re.sub("[^A-Za-z_]", " ", text)
         text = re.sub(" +"," ",text)
         text = text.lower()
         return text

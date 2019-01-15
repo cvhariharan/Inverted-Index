@@ -1,5 +1,6 @@
 import re, sys, os, keywords_extractor
-import json
+import json, operator
+from collections import OrderedDict
 
 def lister(dir_name): #Lists all the files and folders in the current working directory
     filesList = []
@@ -31,6 +32,7 @@ for eachFile in filesList:
         index[keywords[j]].sort()
 
 indexFile = open(os.getcwd()+"/index.json", "w")
+index = OrderedDict(sorted(index.items(), key=lambda t: t[0]))
 indexFile.write(json.dumps(index))
 indexFile.close()
 
