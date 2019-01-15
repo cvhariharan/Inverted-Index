@@ -28,44 +28,44 @@ class Parser:
             self.error()
     
     def parseBasicExpression(self):
-        print("ParseBasicExpression: "+self.tokens[self.tokenPtr]["token"])
-        if self.tokens[self.tokenPtr]["type"] == Type.NOT:
-            self.eat(Type.NOT)
-            keyword = self.eat(Type.KEYWORD)
-            print("Not: "+str(self.processor.notKeyword(keyword)))
-            return self.processor.notKeyword(keyword)
-        else:
-            keyword = self.eat(Type.KEYWORD)
-            print("Keyword: "+str(self.processor.getPostingList(keyword)))
-            return self.processor.getPostingList(keyword)
+        # print("ParseBasicExpression: "+self.tokens[self.tokenPtr]["token"])
+        if self.tokenPtr < len(self.tokens):
+            if self.tokens[self.tokenPtr]["type"] == Type.NOT:
+                self.eat(Type.NOT)
+                keyword = self.eat(Type.KEYWORD)
+                # print("Not: "+str(self.processor.notKeyword(keyword)))
+                return self.processor.notKeyword(keyword)
+        
+        keyword = self.eat(Type.KEYWORD)
+        # print("Keyword: "+str(self.processor.getPostingList(keyword)))
+        return self.processor.getPostingList(keyword)
+        
 
     def parseFactor(self):
-        print("ParseFactor: "+self.tokens[self.tokenPtr]["token"])
+        # print("ParseFactor: "+self.tokens[self.tokenPtr]["token"])
         list1 = self.parseBasicExpression()
-        if self.tokens[self.tokenPtr]["type"] == Type.AND:
-            self.eat(Type.AND)
-            list2 = self.parseBasicExpression()
-            print("List1: "+str(list1))
-            print("List2: "+str(list2))
-            output = self.processor.andMerge(list1, list2)
-            print("And: "+str(output))
-            return output
-        else:
-            print("BasicExpression: "+str(list1))
-            return list1
+        if self.tokenPtr < len(self.tokens):
+            if self.tokens[self.tokenPtr]["type"] == Type.AND:
+                self.eat(Type.AND)
+                list2 = self.parseBasicExpression()
+                # print("List1: "+str(list1))
+                # print("List2: "+str(list2))
+                output = self.processor.andMerge(list1, list2)
+                # print("And: "+str(output))
+                return output
+        return list1
     
     def parseTerm(self):
-        print("ParseTerm: "+self.tokens[self.tokenPtr]["token"])
+        # print("ParseTerm: "+self.tokens[self.tokenPtr]["token"])
         list1 = self.parseFactor()
-        if self.tokens[self.tokenPtr]["type"] == Type.OR:
-            self.eat(Type.OR)
-            list2 = self.parseFactor()
-            output = self.processor.orKeyword(list1, list2)
-            print("Or: "+str(output))
-            return output
-        else:
-            print("Factor: "+str(list1))
-            return list1
+        if self.tokenPtr < len(self.tokens):
+            if self.tokens[self.tokenPtr]["type"] == Type.OR:
+                self.eat(Type.OR)
+                list2 = self.parseFactor()
+                output = self.processor.orMerge(list1, list2)
+                # print("Or: "+str(output))
+                return output
+        return list1
     
 
 
@@ -90,5 +90,6 @@ def lexer(query):
 query = input()
 print(lexer(query))
 queryParser = Parser(lexer(query), './index.json').parseTerm()
+print(queryParser)
 
 
